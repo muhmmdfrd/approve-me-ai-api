@@ -1,0 +1,1 @@
+﻿dotnet ef dbcontext scaffold "Host=localhost;Port=11279;Database=approve_me;Username=usr_approve_me;Password=PreeA9DWrhXYyYySpJadUkEwU9;timeout=180" Npgsql.EntityFrameworkCore.PostgreSQL -o Entities -c AppDbContext --context-dir Contexts -f
