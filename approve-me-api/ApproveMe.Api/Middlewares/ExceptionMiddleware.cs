@@ -2,37 +2,26 @@
 using System.Text;
 using ApproveMe.Api.Constants;
 using ApproveMe.Api.Models;
-using Flozacode.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApproveMe.Api.Middlewares;
 
-public class ExceptionMiddleware
+public class ExceptionMiddleware(RequestDelegate request, ILogger<ExceptionMiddleware> logger)
 {
-    private readonly RequestDelegate _request;
-    private readonly ILogger<ExceptionMiddleware> _logger;
-
-    public ExceptionMiddleware(RequestDelegate request, ILogger<ExceptionMiddleware> logger)
-    {
-        _request = request;
-        _logger = logger;
-    }
-
     public async Task InvokeAsync(HttpContext httpContext, IWebHostEnvironment environment)
     {
         try
         {
-            await _request(httpContext);
+            await request(httpContext);
         }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(httpContext, ex, environment, _logger);
+            await HandleExceptionAsync(httpContext, ex, environment, logger);
         }
     }
 
     private static Task HandleExceptionAsync(HttpContext httpContext, Exception ex, IWebHostEnvironment environment, ILogger<ExceptionMiddleware> logger)
     {
-        var code = ResponseConstant.INTERNAL_SERVER_ERROR_CODE;
         var message = ResponseConstant.INTERNAL_SERVER_ERROR;
         var innerMessage = ex.InnerException != null ? ex.GetBaseException().Message : string.Empty;
         var exceptionType = ex.GetType().ToString();
@@ -52,26 +41,19 @@ public class ExceptionMiddleware
         // check typeof Exception
         if (ex is UnauthorizedAccessException unauthorizedException)
         {
-            code = ResponseConstant.UNAUTHORIZED_CODE;
             message = unauthorizedException.Message;
             httpStatus = (int)HttpStatusCode.Unauthorized;
         }
         else if (ex is DbUpdateException _)
         {
-            code = ResponseConstant.DATABASE_UNIQUE_CODE;
             message = innerMessage;
         }
         else if (ex is InvalidOperationException invalidOperationException)
         {
             if (invalidOperationException.Message.Contains("UseMySql"))
             {
-                code = ResponseConstant.DATABASE_CONNECTION_CODE;
                 message = ResponseConstant.DATABASE_CONNECTION;
             }
-        }
-        else if (ex is RecordNotFoundException _)
-        {
-            code = ResponseConstant.RECORD_NOT_FOUND_CODE;
         }
 
         var response = new ApiResponse<object>().Fail(message).ToString();
@@ -79,6 +61,6 @@ public class ExceptionMiddleware
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = httpStatus;
 
-        return httpContext.Response.WriteAsync(response!, Encoding.UTF8);
+        return httpContext.Response.WriteAsync(response, Encoding.UTF8);
     }
 }
