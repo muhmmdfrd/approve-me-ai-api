@@ -2,12 +2,14 @@
 using ApproveMe.Core.Dtos;
 using ApproveMe.Core.Interfaces;
 using ApproveMe.Core.Models;
+using ApproveMe.Core.Rpc.Interfaces;
 using Flozacode.Models.Paginations;
+using Textservice;
 using UuidExtensions;
 
 namespace ApproveMe.Core.Helpers;
 
-public class UserHelper(IUserService service)
+public class UserHelper(IUserService service, IPredictionService predictionService)
 {
     public Task<Pagination<UserViewDto>> GetPagedAsync(UserFilter filter)
     {
@@ -61,5 +63,10 @@ public class UserHelper(IUserService service)
     public Task<int> DeleteAsync(long id, CurrentUser currentUser, bool isHardDelete)
     {
         return service.DeleteAsync(id, currentUser, isHardDelete);
+    }
+
+    public Task<string> SuggestAsync(TextRequest request)
+    {
+        return predictionService.SuggestUserName(request);
     }
 }

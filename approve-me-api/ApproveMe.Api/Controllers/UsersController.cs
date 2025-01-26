@@ -5,6 +5,7 @@ using ApproveMe.Core.Dtos;
 using ApproveMe.Core.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Textservice;
 
 namespace ApproveMe.Api.Controllers;
 
@@ -33,13 +34,13 @@ public class UsersController(UserHelper helper) : FlozaApiController
         return ApiOK(result);
     }
     
-    [HttpGet("find/{id:long}")]
-    [ProducesResponseType(typeof(ApiResponse<UserViewDto>), StatusCodes.Status200OK)]
+    [HttpGet("suggest")]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> FindA([FromRoute] long id)
+    public async Task<IActionResult> Suggest([FromQuery] TextRequest request)
     {
-        var result = await helper.FindAsync(id);
+        var result = await helper.SuggestAsync(request);
         return Ok(result);
     }
 

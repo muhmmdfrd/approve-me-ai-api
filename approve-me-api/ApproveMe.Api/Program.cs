@@ -1,6 +1,7 @@
 using Flozacode.Repository;
 using ApproveMe.Api.Extensions;
 using ApproveMe.Core;
+using ApproveMe.Core.Rpc;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,7 @@ services.ConfigureControllerPrefix();
 services.AddDbContext(builder.Configuration);
 services.RegisterServices();
 services.RegisterHelpers();
+services.RegisterRpc();
 services.RegisterAppSettings(builder.Configuration);
 services.RegisterRedis(builder.Configuration);
 services.ConfigureCors();
