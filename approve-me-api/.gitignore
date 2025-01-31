@@ -268,5 +268,5 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/
 ApproveMe.Api/Logs
-ApproveMe.Api/appsettings.json
-ApproveMe.Api/appsettings.Development.json
+# ApproveMe.Api/appsettings.json
+# ApproveMe.Api/appsettings.Development.json
