@@ -67,6 +67,13 @@ public class FlozaApiController : ControllerBase
         var response = new ApiResponse<object?>().Unauthorized();
         return StatusCode((int)HttpStatusCode.Unauthorized, response);
     }
+    
+    [NonAction]
+    protected ObjectResult ApiUnauthorized(string message)
+    {
+        var response = new ApiResponse<object?>().Unauthorized(message);
+        return StatusCode((int)HttpStatusCode.Unauthorized, response);
+    }
 
     [NonAction]
     protected ObjectResult ApiForbidden()
