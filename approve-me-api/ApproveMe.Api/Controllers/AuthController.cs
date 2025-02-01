@@ -14,15 +14,6 @@ namespace ApproveMe.Api.Controllers;
 [AllowAnonymous]
 public class AuthController(AuthHelper authHelper, RedisService redisService) : FlozaApiController
 {
-    [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetSession()
-    {
-        var sessions = await redisService.HashGetAllAsync(RedisConstant.UserSession);
-        return ApiOK(sessions);
-    }
-    
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status401Unauthorized)]
@@ -31,7 +22,7 @@ public class AuthController(AuthHelper authHelper, RedisService redisService) : 
         var result = await authHelper.AuthAsync(request);
         if (result == null)
         {
-            return ApiUnauthorized();
+            return ApiUnauthorized("Username or password is incorrect.");
         }
         
         return ApiOK(result);

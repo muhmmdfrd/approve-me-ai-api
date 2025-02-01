@@ -1,16 +1,14 @@
 services:
-  # app:
-  #   build:
-  #     context: .
-  #     image: approve-me-api
-  #   depends_on:
-  #     - db
-  #   networks:
-  #     - approve-me-network
-  #   ports:
-  #     - 8080:8080
-  #     - 8081:8081
-  #   restart: unless-stopped
+  app:
+    image: approve-me-api:1.0.0
+    depends_on:
+      - db
+    networks:
+      - approve-me-network
+    ports:
+      - 8080:8080
+      - 8081:8081
+    restart: unless-stopped
 
   db:
     image: postgres:17.2
@@ -22,14 +20,14 @@ services:
     networks:
       - approve-me-network
     ports:
-      - 11279:5432
+      # - 11279:5432
     restart: unless-stopped
 
   redis:
     image: redis:latest
     container_name: approveme-redis
-    ports:
-      - "16379:6379"
+    # ports:
+    #   - "16379:6379"
     volumes:
       - ./approve-me-redis/data:/data
     command: ["redis-server", "--appendonly", "yes"]

@@ -7,7 +7,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ApproveMe.Api/ApproveMe.Api.csproj", "ApproveMe.Api/"]
+COPY ["ApproveMe.Api.csproj", "ApproveMe.Api/"]
 COPY ["ApproveMe.Core/ApproveMe.Core.csproj", "ApproveMe.Core/"]
 COPY ["ApproveMe.Repository/ApproveMe.Repository.csproj", "ApproveMe.Repository/"]
 
