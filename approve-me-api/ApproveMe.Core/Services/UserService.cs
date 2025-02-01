@@ -19,20 +19,23 @@ public class UserService(IFlozaRepo<User, AppDbContext> repo, IMapper mapper) : 
     {
         var query = repo.AsQueryable.AsNoTracking();
         var total = query.Count();
-        var filtered = total;
+        int filtered;
 
         if (!string.IsNullOrEmpty(filter.Keyword))
         {
-            query = query.Where(q => q.Name.Contains(filter.Keyword, StringComparison.OrdinalIgnoreCase));
-            filtered = query.Count();
+            query = query.Where(q => q.Name.ToLower().Contains(filter.Keyword.ToLower()));
+            filtered = await query.CountAsync();
         }
-
+        
         var result = await query
             .ProjectTo<UserViewDto>(mapper.ConfigurationProvider)
             .SortBy(filter.SortName, filter.SortDir)
             .Skip(filter.Skip)
             .Take(filter.Size)
             .ToListAsync();
+        
+        
+        filtered = result.Count;
 
         return new Pagination<UserViewDto>
         {
