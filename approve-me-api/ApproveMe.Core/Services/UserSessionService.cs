@@ -32,8 +32,11 @@ public class UserSessionService(IFlozaRepo<UserSession, AppDbContext> repo) : IU
 
     public async Task<int?> InvalidateSessionAsync(string code)
     {
-        var existing = repo.AsQueryable.FirstOrDefault(q => q.Code == code);
-        if (existing == null) return null;
+        var existing = await repo.AsQueryable.FirstOrDefaultAsync(q => q.Code == code);
+        if (existing == null)
+        {
+            return null;
+        }
        
         existing.IsValid = false;
        

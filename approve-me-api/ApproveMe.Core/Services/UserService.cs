@@ -68,37 +68,37 @@ public class UserService(IFlozaRepo<User, AppDbContext> repo, IMapper mapper) : 
         return repo.AddAsync(entity);
     }
 
-    public Task<int> UpdateAsync(UserUpdDto value)
+    public async Task<int> UpdateAsync(UserUpdDto value)
     {
-        var existing = repo.AsQueryable.FirstOrDefault(q => q.Id == value.Id);
+        var existing = await repo.AsQueryable.FirstOrDefaultAsync(q => q.Id == value.Id);
         if (existing == null)
         {
             throw new RecordNotFoundException("User not found.");
         }
 
         mapper.Map(value, existing);
-        return repo.UpdateAsync(existing);
+        return await repo.UpdateAsync(existing);
     }
 
-    public Task<int> DeleteAsync(long id)
+    public async Task<int> DeleteAsync(long id)
     {
-        var entity = repo.AsQueryable.FirstOrDefault(q => q.Id == id);
+        var entity = await repo.AsQueryable.FirstOrDefaultAsync(q => q.Id == id);
         if (entity == null)
         {
             throw new RecordNotFoundException("User not found.");
         }
 
-        return repo.DeleteAsync(entity);
+        return await repo.DeleteAsync(entity);
     }
 
-    public Task<int> DeleteAsync(long id, CurrentUser currentUser, bool isHardDelete = false)
+    public async Task<int> DeleteAsync(long id, CurrentUser currentUser, bool isHardDelete = false)
     {
         if (isHardDelete)
         {
-            return DeleteAsync(id);
+            return await DeleteAsync(id);
         }
 
-        var entity = repo.AsQueryable.FirstOrDefault(q => q.Id == id);
+        var entity = await repo.AsQueryable.FirstOrDefaultAsync(q => q.Id == id);
         if (entity == null)
         {
             throw new RecordNotFoundException("User not found.");
@@ -107,20 +107,20 @@ public class UserService(IFlozaRepo<User, AppDbContext> repo, IMapper mapper) : 
         entity.ModifiedBy = currentUser.Id;
         entity.ModifiedAt = DateTime.UtcNow;
 
-        return repo.UpdateAsync(entity);
+        return await repo.UpdateAsync(entity);
     }
 
-    public Task<int> UpdateFirebaseTokenAsync(long id, string token)
+    public async Task<int> UpdateFirebaseTokenAsync(long id, string token)
     {
-        var user = repo.AsQueryable.FirstOrDefault(q => q.Id == id);
+        var user = await repo.AsQueryable.FirstOrDefaultAsync(q => q.Id == id);
         if (user == null)
         {
-            return Task.FromResult(0);
+            return 0;
         }
 
         user.ModifiedBy = id;
         user.ModifiedAt = DateTime.UtcNow;
         
-        return repo.UpdateAsync(user);
+        return await repo.UpdateAsync(user);
     }
 }

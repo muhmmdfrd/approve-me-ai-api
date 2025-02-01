@@ -27,5 +27,11 @@ public partial class User
 
     public DateTime? ModifiedAt { get; set; }
 
+    public virtual ICollection<LetterApproval> LetterApprovals { get; set; } = new List<LetterApproval>();
+
+    public virtual ICollection<Letter> Letters { get; set; } = new List<Letter>();
+
     public virtual ICollection<UserSession> UserSessions { get; set; } = new List<UserSession>();
+
+    public virtual ICollection<Workflow> Workflows { get; set; } = new List<Workflow>();
 }
